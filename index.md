@@ -43,6 +43,7 @@ Diving In
 - [Project repository](https://github.com/tagae/context-traits)
 - [Annotated source code](docs/prologue.html)
 - [Browser compatibility](test/)
+- [Context traits demos](demo/)
 
 
 [production version]: https://raw.github.com/tagae/context-traits/gh-pages/dist/context-traits.min.js

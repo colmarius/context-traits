@@ -1,0 +1,100 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Contexts Demo</title>
+    <link rel="stylesheet" href="vendor/codemirror.css">
+    <link rel="stylesheet" href="vendor/simple-hint.css">
+    <link rel="stylesheet" href="vendor/docs.css">
+    <script src="vendor/codemirror.js"></script>
+    <script src="vendor/simple-hint.js"></script>
+    <script src="vendor/javascript-hint.js"></script>
+    <script src="vendor/searchcursor.js"></script>
+    <script src="vendor/match-highlighter.js"></script>
+    <script src="vendor/javascript.js"></script>
+    <script src="../test/vendor/underscore.js"></script>
+    <script src="../test/vendor/traits.js"></script>
+    <script src="../dist/context-traits.js"
+          onLoad="contexts.disabledhome='../dist/'"></script>
+    <style type="text/css">
+      body {
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+      .CodeMirror { 
+        border: 1px solid #eee;
+      }
+      .CodeMirror-scroll {
+        height: 400px;
+        overflow: auto;
+        width: 100%;
+      }
+      span.CodeMirror-matchhighlight { 
+        background: #e9e9e9 
+      }
+      .CodeMirror-focused span.CodeMirror-matchhighlight { 
+        background: #e7e4ff; !important 
+      }
+      .cm-s-default {
+        word-wrap: break-word;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Context Traits Demos
+    </h1>
+    <textarea id="code" name="code"></textarea>
+    <p>
+      <button onclick="doRun();">Run!</button>
+      <select id="file" onchange="loadDemo();">
+        <option selected="true">intro.js</option>
+      </select>
+    </p>
+    <pre id="output" class="cm-s-default"></pre>
+    <p>
+      <i>Some hints</i>: press <strong>ctrl-space</strong> to activate autocompletion; 
+      double-click to <strong>highlight</strong> matches of selected text.
+    </p>
+    <script>
+      var messages = [];
+      function print(line) { messages.push(line); }
+      function clearMessages() { 
+        messages = []; 
+        document.getElementById("output").innerHTML = '';
+      }
+      function loadDemo() {
+        function makeHttpRequest() {
+          try {return new XMLHttpRequest();}
+          catch (error) {}
+          try {return new ActiveXObject("Msxml2.XMLHTTP");}
+          catch (error) {}
+          try {return new ActiveXObject("Microsoft.XMLHTTP");}
+          catch (error) {}
+          throw new Error("Could not create HTTP request object.");
+        }
+        var file = document.getElementById('file').value;
+        var request = makeHttpRequest();
+        request.open("GET", "examples/" + file, false);
+        request.send(null);
+        editor.setValue(request.responseText);
+        clearMessages();
+      }
+      function doRun() {
+        clearMessages();
+        eval(editor.getValue());
+        document.getElementById("output").innerHTML = messages.join("\n");
+      }
+      CodeMirror.commands.autocomplete = function(cm) {
+        CodeMirror.simpleHint(cm, CodeMirror.javascriptHint);
+      }
+      var editor = CodeMirror.fromTextArea(document.getElementById('code'), {
+        lineNumbers: true,
+        tabSize: 2,
+        extraKeys: {"Ctrl-Space": "autocomplete"},
+        onCursorActivity: function() {
+          editor.matchHighlight("CodeMirror-matchhighlight");
+        }
+      });
+      loadDemo();
+    </script>
+  </body>
+</html>
