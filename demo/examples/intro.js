@@ -10,6 +10,7 @@ person = {
 };
 
 noisy = new Context('noisy');
+quiet = new Context('quiet');
 
 noisyPerson = Trait({
   greet: function() {
@@ -17,11 +18,25 @@ noisyPerson = Trait({
   }
 });
 
+quietPerson = Trait({
+  greet: function() {
+    return 'hi'; 
+  }
+});
+
 noisy.adapt(person, noisyPerson);
+quiet.adapt(person, quietPerson);
+
+print(person.greet());
+
+quiet.activate();
 print(person.greet());
 
 noisy.activate();
 print(person.greet());
 
 noisy.deactivate();
+print(person.greet());
+
+quiet.deactivate();
 print(person.greet());
