@@ -46,7 +46,7 @@ _.extend Manager.prototype,
   orderedMethods: (object, name) ->
     adaptations = this.adaptationChainFor object
     for adaptation in adaptations
-      adaptation.trait[name].value
+      adaptation.trait[name].value if adaptation.trait[name]?
 
 # Extend `Policy` with methods related to composition.
 
