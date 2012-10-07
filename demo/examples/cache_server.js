@@ -26,13 +26,13 @@ EncripterT = new Trait({
   },
   store: function(key, value) {
     var encryptedValue = this.encrypt(value);
-    print("Privacy: cacheServer.store(" + key + ", " + encryptedValue + ")");
+    print("EncripterT:  cacheServer.store(" + key + ", " + encryptedValue + ")");
     this.proceed(key, encryptedValue);
   },
   lookup: function(key) {
     var encryptedValue = this.proceed(key);
     if (encryptedValue) {
-      print("Privacy: cacheServer.lookup(" + key + ") returned " + encryptedValue);
+      print("EncripterT:  cacheServer.lookup(" + key + ") returned " + encryptedValue);
       var decryptedValue = this.decrypt(encryptedValue);
       return decryptedValue;  
     }
@@ -42,29 +42,29 @@ EncripterT = new Trait({
 PersistentT = new Trait({
   backupValues: {},
   store: function(key, value) {
-    print("Backup:  cacheServer.backupValues[" + key + "] = " + value);
+    print("PersistentT: cacheServer.backupValues[" + key + "] = " + value);
     this.backupValues[key] = value;
     this.proceed(key, value);
   },
   backupLookup: function(key) {
     var value = this.backupValues[key];
-    print("Backup:  cacheServer.backupLookup(" + key + ") returned " + value);
+    print("PersistentT: cacheServer.backupLookup(" + key + ") returned " + value);
     return value;
   }
 });
 
 LoggerT = new Trait({
   store: function(key, value) {
-    print("Debug:   cacheServer.store(" + key + ", " + value + ")");
+    print("LoggerT:     cacheServer.store(" + key + ", " + value + ")");
     this.proceed(key, value);
   },
   lookup: function(key) {
     var value = this.proceed(key);
-    print("Debug:   cacheServer.lookup(" + key + ") returned " + value);
+    print("LoggerT:     cacheServer.lookup(" + key + ") returned " + value);
     return value;
   },
   remove: function(key) {
-    print("Debug:   cacheServer.remove(" + key + ")");
+    print("LoggerT:     cacheServer.remove(" + key + ")");
     this.proceed(key);
   }
 });
@@ -73,8 +73,9 @@ Untrusted.adapt(cacheServer, EncripterT);
 Volatile.adapt(cacheServer,PersistentT);
 Auditing.adapt(cacheServer, LoggerT);
 
-Auditing.activate();
 Volatile.activate();
+Auditing.activate();
+Untrusted.activate();
 
 cacheServer.store("1", 1);
 cacheServer.lookup("1");
