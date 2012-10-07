@@ -21,6 +21,7 @@ traits.Extensible = Trait
     if index + 1 == alternatives.length
       throw new Error "Cannot proceed further"
     # Invoke next method.
+    index++ while !alternatives[index+1]
     alternatives[index+1].apply this, args
 
 traceableMethod = (name, method) ->
